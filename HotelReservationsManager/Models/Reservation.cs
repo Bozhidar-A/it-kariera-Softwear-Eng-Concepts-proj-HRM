@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,6 +23,7 @@ namespace HotelReservationsManager.Models
         public bool breakfast { get; set; }
         [Required]
         public bool allInclusive { get; set; }
+        [Column(TypeName = "decimal(18,4)")]
         public decimal finalPrice { get; set; }
     }
 }

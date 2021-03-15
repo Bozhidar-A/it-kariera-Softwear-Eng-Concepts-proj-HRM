@@ -11,6 +11,7 @@ namespace HotelReservationsManager.Models
         public string firstName { get; set; }
         public string middleName { get; set; }
         public string lastName { get; set; }
+        //TODO add EGN validation
         public int EGN { get; set; }
         public DateTime hireDate { get; set; }
         public bool isActive { get; set; }

@@ -19,10 +19,10 @@ namespace HotelReservationsManager.Models
         [Required]
         public bool free { get; set; }
         [Required]
-        [Column(TypeName = "decimal(18,4)")]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal bedAdultPrice { get; set; }
         [Required]
-        [Column(TypeName = "decimal(18,4)")]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal bedChildPrice { get; set; }
     }
 }

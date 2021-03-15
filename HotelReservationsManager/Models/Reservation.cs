@@ -23,7 +23,7 @@ namespace HotelReservationsManager.Models
         public bool breakfast { get; set; }
         [Required]
         public bool allInclusive { get; set; }
-        [Column(TypeName = "decimal(18,4)")]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal finalPrice { get; set; }
     }
 }

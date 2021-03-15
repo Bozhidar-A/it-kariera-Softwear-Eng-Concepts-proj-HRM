@@ -13,5 +13,8 @@ namespace HotelReservationsManager.Data
             : base(options)
         {
         }
+        public DbSet<HotelReservationsManager.Models.Client> Client { get; set; }
+        public DbSet<HotelReservationsManager.Models.Room> Room { get; set; }
+        public DbSet<HotelReservationsManager.Models.Reservation> Reservation { get; set; }
     }
 }

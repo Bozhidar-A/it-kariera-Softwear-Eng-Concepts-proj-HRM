@@ -22,9 +22,15 @@ namespace HotelReservationsManager.Controllers
         }
 
         // GET: Clients
-        public async Task<IActionResult> Index(int? page)
+        public async Task<IActionResult> Index(int? page, string firstName, string lastName)
         {
-            IQueryable<Client> products = _context.Client;
+            TempData["firstName"] = firstName;
+            TempData["lastName"] = lastName;
+
+            IQueryable<Client> clients = _context.Client.
+                Where(fn => fn.firstName.Contains(String.IsNullOrWhiteSpace(firstName) ? "" : firstName.Trim())).
+                Where(ln => ln.lastName.Contains(String.IsNullOrWhiteSpace(lastName) ? "" : lastName.Trim()));
+
 
             int pageSize = 0; //default is 10
 
@@ -47,7 +53,7 @@ namespace HotelReservationsManager.Controllers
             {
                 pageNumber = 1;// ?? catches null not 0
             }
-            var onePageOfProducts = products.ToPagedList(pageNumber, pageSize);
+            var onePageOfProducts = clients.ToPagedList(pageNumber, pageSize);
 
             return View(onePageOfProducts);
         }

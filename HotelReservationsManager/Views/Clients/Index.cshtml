@@ -27,6 +27,16 @@
 
 <h1>Index</h1>
 
+<form asp-action="Index">
+    <label for="firstName">Client First Name</label>
+    <input name="firstName" value="@TempData["firstName"]" />
+    <br />
+    <label for="lastName">Client Last Name</label>
+    <input name="lastName" value="@TempData["lastName"]" />
+    <br />
+    <input type="submit" value="Search" />
+</form>
+
 <div class="form-check form-check-inline">
     <input id="1" class="form-check-input" type="radio" name="inlineRadioOptions" value="1" onclick="UpCookie(this)">
     <label class="form-check-label" for="inlineRadio1">1</label>

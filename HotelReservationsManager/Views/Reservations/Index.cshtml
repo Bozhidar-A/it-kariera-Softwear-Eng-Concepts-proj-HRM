@@ -1,8 +1,29 @@
-﻿@model IEnumerable<HotelReservationsManager.Models.Reservation>
+﻿@model IPagedList<HotelReservationsManager.Models.Reservation>
+@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@using X.PagedList.Mvc.Core.Common;
 
 @{
     ViewData["Title"] = "Index";
 }
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        var pageSize = Cookies.get("pageSize");
+        if (pageSize !== undefined) {
+            $(`#${pageSize}`).prop('checked', true);
+        }
+    });
+
+    function UpCookie(evn) {
+        Cookies.set("pageSize", evn.value);
+        window.location = '@Url.Action("Index")';
+    }
+
+</script>
 
 <h1>Index</h1>
 
@@ -10,50 +31,53 @@
     <a asp-action="Create">Create New</a>
 </p>
 <table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.reservationDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.releaseDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.breakfast)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.allInclusive)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.finalPrice)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
+    @*<thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.reservationDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.releaseDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.breakfast)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.allInclusive)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.finalPrice)
+                </th>
+                <th></th>
+            </tr>
+        </thead>*@
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.reservationDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.releaseDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.breakfast)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.allInclusive)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.finalPrice)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.reservationDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.releaseDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.breakfast)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.allInclusive)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.finalPrice)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page }))

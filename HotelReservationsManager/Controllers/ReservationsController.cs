@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HotelReservationsManager.Data;
 using HotelReservationsManager.Models;
+using X.PagedList;
+using Microsoft.AspNetCore.Http;
 
 namespace HotelReservationsManager.Controllers
 {
@@ -20,9 +22,34 @@ namespace HotelReservationsManager.Controllers
         }
 
         // GET: Reservations
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? page)
         {
-            return View(await _context.Reservation.ToListAsync());
+            IQueryable<Reservation> products = _context.Reservation;
+
+            int pageSize = 0; //default is 10
+
+            if (!int.TryParse(Request.Cookies["pageSize"], out pageSize))
+            {
+                //bad cookie
+                //set to default
+                pageSize = 10;
+
+                //make cookie
+                CookieOptions option = new CookieOptions();
+                option.Expires = DateTime.MaxValue;
+                HttpContext.Response.Cookies.Append("pageSize", pageSize.ToString(), option);
+
+                //TryParse will set to value of cookie if valid int
+            }
+
+            var pageNumber = page ?? 1; // if no page was specified in the querystring, default to the first page (1)
+            if (pageNumber == 0)
+            {
+                pageNumber = 1;// ?? catches null not 0
+            }
+            var onePageOfProducts = products.ToPagedList(pageNumber, pageSize);
+
+            return View(onePageOfProducts);
         }
 
         // GET: Reservations/Details/5

@@ -49,25 +49,25 @@
 </p>
 <table class="table">
     @*<thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.firstName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.lastName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.phoneNumber)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.email)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.isAdult)
-                </th>
-                <th></th>
-            </tr>
-        </thead>*@
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.firstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.lastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.phoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.isAdult)
+            </th>
+            <th></th>
+        </tr>
+    </thead>*@
     <tbody>
         @foreach (var item in Model)
         {
@@ -98,4 +98,3 @@
 </table>
 
 @Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page }))
-

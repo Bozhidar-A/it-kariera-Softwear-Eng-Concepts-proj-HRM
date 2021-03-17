@@ -9,6 +9,7 @@ using HotelReservationsManager.Data;
 using HotelReservationsManager.Models;
 using Microsoft.AspNetCore.Http;
 using X.PagedList;
+using Microsoft.Extensions.Configuration;
 
 namespace HotelReservationsManager.Controllers
 {
@@ -16,17 +17,63 @@ namespace HotelReservationsManager.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public RoomsController(ApplicationDbContext context)
+        private readonly IConfiguration _configuration;
+
+        public RoomsController(ApplicationDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         // GET: Rooms
-        public async Task<IActionResult> Index(int? page)
+        public async Task<IActionResult> Index(int? page, 
+            int capacity, 
+            string type, 
+            bool bFree,
+            bool bSearch)
         {
-            //TempData["st"] = st;
-            //await _context.Room.ToListAsync()
-            IQueryable<Room> products = _context.Room;
+
+            TempData["capacity"] = capacity;
+            TempData["bFree"] = bFree;
+
+            ViewBag.type = _configuration.GetSection("RoomTypes").Get<List<string>>()
+                .Select(x => 
+                new SelectListItem() { Text = x.ToString(), Value = x.ToString() });
+
+            IQueryable<Room> rooms;
+
+            if (capacity == 0)
+            {
+                if (bSearch)
+                {
+                    rooms = _context.Room.
+                        Where(t => type == "Select Apartment Type" ? t.type.Contains("") : t.type == type).
+                        Where(bF => bFree ? bF.free == true : bF.free == false);             
+                }
+                else
+                {
+                    rooms = _context.Room;
+                }
+            }
+            else
+            {
+                if(bSearch)
+                {
+                    rooms = _context.Room.
+                        Where(c => c.capacity == capacity).
+                        Where(t => t.type == "Select Apartment Type" ? t.type.Contains("") : t.type == type).
+                        Where(bF => bFree ? bF.free == true : bF.free == false);
+                }
+                else
+                {
+                    rooms = _context.Room.
+                        Where(c => c.capacity == capacity).
+                        Where(t => t.type == "Select Apartment Type" ? t.type.Contains("") : t.type == type);
+                }
+            }
+            
+
+
             //this is bad as it can take the whole db
             //todo optimise by rewriting
 
@@ -51,9 +98,9 @@ namespace HotelReservationsManager.Controllers
             {
                 pageNumber = 1;// ?? catches null not 0
             }
-            var onePageOfProducts = products.ToPagedList(pageNumber, pageSize);
+            var onePageOfRooms = rooms.ToPagedList(pageNumber, pageSize);
 
-            return View(onePageOfProducts);
+            return View(onePageOfRooms);
         }
 
         // GET: Rooms/Details/5
@@ -71,12 +118,20 @@ namespace HotelReservationsManager.Controllers
                 return NotFound();
             }
 
+            ViewBag.type = _configuration.GetSection("RoomTypes").Get<List<string>>()
+                .Select(x =>
+                new SelectListItem() { Text = x.ToString(), Value = x.ToString() });
+
             return View(room);
         }
 
         // GET: Rooms/Create
         public IActionResult Create()
         {
+            ViewBag.type = _configuration.GetSection("RoomTypes").Get<List<string>>()
+                .Select(x =>
+                new SelectListItem() { Text = x.ToString(), Value = x.ToString() });
+
             return View();
         }
 

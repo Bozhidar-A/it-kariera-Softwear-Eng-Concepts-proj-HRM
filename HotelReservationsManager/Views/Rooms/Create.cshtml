@@ -14,13 +14,18 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="capacity" class="control-label"></label>
-                <input asp-for="capacity" class="form-control" />
+                <input asp-for="capacity" class="form-control" type="number" min="0"/>
                 <span asp-validation-for="capacity" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <label asp-for="type" class="control-label"></label>
                 <input asp-for="type" class="form-control" />
                 <span asp-validation-for="type" class="text-danger"></span>
+            </div>*@
+            <div class="form-group">
+                <select asp-for="type" asp-items="ViewBag.type">
+                    <option value="Select Apartment Type">Select Apartment Type</option>
+                </select>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
@@ -29,12 +34,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="bedAdultPrice" class="control-label"></label>
-                <input asp-for="bedAdultPrice" class="form-control" />
+                <input asp-for="bedAdultPrice" class="form-control" min="0"/>
                 <span asp-validation-for="bedAdultPrice" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="bedChildPrice" class="control-label"></label>
-                <input asp-for="bedChildPrice" class="form-control" />
+                <input asp-for="bedChildPrice" class="form-control" min="0"/>
                 <span asp-validation-for="bedChildPrice" class="text-danger"></span>
             </div>
             <div class="form-group">

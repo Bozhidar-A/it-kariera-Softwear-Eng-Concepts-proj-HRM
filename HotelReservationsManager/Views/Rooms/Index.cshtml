@@ -25,7 +25,51 @@
 
 </script>
 
+@{ 
+    int? cap = 0;
+    if((int)TempData["capacity"] != 0)
+    {
+        cap = (int)TempData["capacity"];
+    }
+    else
+    {
+        cap = null;
+    }
+    //visual fix to have an empty instead of 0
+}
+
 <h1>Index</h1>
+
+<form asp-action="Index">
+    <label for="capacity">Room Capacity</label>
+    <input name="capacity" value="@cap" type="number" />
+    <br />
+    <label for="lastName">Room Type</label>
+    @*<input name="type" value="@TempData["type"]" />*@
+    <select name="type" asp-items="ViewBag.type">
+        <option value="Select Apartment Type">Select Apartment Type</option>
+    </select>
+    <br />
+    <label for="bFree">Is Free?</label>
+    @if ((bool)TempData["bFree"])
+    {
+        <input type="checkbox" name="bFree" value="true" checked />
+    }
+    else
+    {
+        <input type="checkbox" name="bFree" value="true"/>
+        //checkbox val needs to be set to true or it doesn't work
+    }
+    <input hidden type="checkbox" name="bSearch" value="true" checked/>
+    <br />
+    <input type="submit" value="Search" />
+</form>
+
+<br />
+
+<form asp-action="Index">
+    <input type="submit" value="Load All"/>
+</form>
 
 <p>
     <a asp-action="Create">Create New</a>

@@ -4,6 +4,43 @@
     ViewData["Title"] = "Create";
 }
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js" integrity="sha512-DedNBWPF0hLGUPNbCYfj8qjlEnNE92Fqn7xd3Sscfu7ipy7Zu33unHdugqRD3c4Vj7/yLv+slqZhMls/4Oc7Zg==" crossorigin="anonymous"></script>
+
+
+<script>
+    $(document).ready(function () {
+        document.getElementById("forbtn").addEventListener("click", bruh);
+    });
+
+    function bruh() {
+        @*$("#UserInputListed")
+            .html("@for (int i = 0; i < 5; i++) { <p>@i</p>}");*@
+        for (i = 0; i < 2; i++) {
+            $.get("@Url.Action("OnGetClientReservationInputPartial", "Reservations")", { whichVC:i + 2}, function (data) {
+                $("#UserInputListed")
+                    .append(data);
+            });
+
+        }
+
+
+    }
+
+    function ReloadViewComp(whichVC) {
+        $.ajax({
+            url: '@Url.Action("ReloadListedClientViewComp", "Reservations")',
+            type: "POST",
+            data: { firstName: $(`#firstName_${whichVC}`).val(), lastName: $(`#lastName_${whichVC}`).val() },
+            success: function (data) {
+                $(`#ClientViewComp_${whichVC}`).html(data);
+            }
+        })
+    }
+
+</script>
+
 <h1>Create</h1>
 
 <h4>Reservation</h4>
@@ -32,10 +69,14 @@
                     <input class="form-check-input" asp-for="allInclusive" /> @Html.DisplayNameFor(model => model.allInclusive)
                 </label>
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <label asp-for="finalPrice" class="control-label"></label>
                 <input asp-for="finalPrice" class="form-control" />
                 <span asp-validation-for="finalPrice" class="text-danger"></span>
+            </div>*@
+            <button id="forbtn" type="button">FOr</button>
+            <div id="UserInputListed">
+                
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

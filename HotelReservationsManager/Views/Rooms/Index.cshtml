@@ -42,7 +42,7 @@
 
 <form asp-action="Index">
     <label for="capacity">Room Capacity</label>
-    <input name="capacity" value="@cap" type="number" />
+    <input name="capacity" value="@cap" type="number" min="0"/>
     <br />
     <label for="lastName">Room Type</label>
     @*<input name="type" value="@TempData["type"]" />*@

@@ -1,0 +1,21 @@
+﻿@model int
+
+<div id="ClientPartial_@Model">
+    <label for="firstName">Client First Name</label>
+    <input id="firstName_@Model" />
+    <br />
+    <label for="lastName">Client Last Name</label>
+    <input id="lastName_@Model"/>
+    <br />
+    <input type="button" value="Search" onclick="ReloadViewComp(@Model)" />
+
+    <br />
+    <div id="ClientViewComp_@Model">
+        @*@await Component.InvokeAsync("ListedClients")*@
+    </div>
+    
+</div>
+
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@

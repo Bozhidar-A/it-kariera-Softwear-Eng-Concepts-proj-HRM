@@ -52,6 +52,21 @@ namespace HotelReservationsManager.Controllers
             return View(onePageOfProducts);
         }
 
+        public IActionResult OnGetClientReservationInputPartial(int whichVC)
+        {
+            return PartialView("_ClientReservationInputPartial", whichVC);
+            //return new PartialViewResult
+            //{
+            //    ViewName = "_ClientReservationInputPartial",
+            //    Model = whichVC
+            //};
+        }
+
+        public IActionResult ReloadListedClientViewComp(string firstName, string lastName)
+        {
+            return ViewComponent("ListedClients", new { firstName = firstName, lastName = lastName });
+        }
+
         // GET: Reservations/Details/5
         public async Task<IActionResult> Details(int? id)
         {

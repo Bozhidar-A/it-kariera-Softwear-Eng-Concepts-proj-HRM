@@ -62,9 +62,9 @@ namespace HotelReservationsManager.Controllers
             //};
         }
 
-        public IActionResult ReloadListedClientViewComp(string firstName, string lastName)
+        public IActionResult ReloadListedClientViewComp(string firstName, string lastName, int whichVC, int? page)
         {
-            return ViewComponent("ListedClients", new { firstName = firstName, lastName = lastName });
+            return ViewComponent("ListedClients", new { firstName = firstName, lastName = lastName, whichVC = whichVC, page = page });
         }
 
         // GET: Reservations/Details/5
@@ -96,8 +96,9 @@ namespace HotelReservationsManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,reservationDate,releaseDate,breakfast,allInclusive,finalPrice")] Reservation reservation)
+        public async Task<IActionResult> Create([Bind("ID,reservationDate,releaseDate,breakfast,allInclusive,finalPrice,clients")] Reservation reservation)
         {
+            //reservation.clients[0] = _context.Client.Where(cl => cl.ID == reservation.clients[0].ID).First();
             if (ModelState.IsValid)
             {
                 _context.Add(reservation);

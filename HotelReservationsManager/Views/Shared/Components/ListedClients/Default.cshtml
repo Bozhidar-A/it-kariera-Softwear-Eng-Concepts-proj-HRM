@@ -1,15 +1,98 @@
-﻿@model IPagedList<HotelReservationsManager.Models.Client>
+﻿@model (IPagedList<HotelReservationsManager.Models.Client>, int)
 @using X.PagedList.Mvc.Core;
 @using X.PagedList;
 @using X.PagedList.Mvc.Core.Common;
 
-@foreach(var client in Model)
-{
-    <p>@client.firstName</p>
-}
+<div class="form-check form-check-inline">
+    <input id="1" class="form-check-input" type="radio" name="inlineRadioOptions" value="1" onclick="UpCookie(this, @Model.Item2)">
+    <label class="form-check-label" for="inlineRadio1">1</label>
+</div>
+<div class="form-check form-check-inline">
+    <input id="10" class="form-check-input" type="radio" name="inlineRadioOptions" value="10" onclick="UpCookie(this, @Model.Item2)">
+    <label class="form-check-label" for="inlineRadio1">10</label>
+</div>
+<div class="form-check form-check-inline">
+    <input id="25" class="form-check-input" type="radio" name="inlineRadioOptions" value="25" onclick="UpCookie(this, @Model.Item2)">
+    <label class="form-check-label" for="inlineRadio1">25</label>
+</div>
+<div class="form-check form-check-inline">
+    <input id="50" class="form-check-input" type="radio" name="inlineRadioOptions" value="50" onclick="UpCookie(this, @Model.Item2)">
+    <label class="form-check-label" for="inlineRadio1">50</label>
+</div>
 
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+<table>
+    <tbody>
+        @{ int innerIndex = 2;/*this is very stupid I should use for loop*/} 
+        @foreach (var client in Model.Item1)
+        {
+        <tr>
+            <td>
+                @client.ID
+                <input id="CIDVC_@innerIndex@Model.Item2" hidden value="@client.ID" />
+            </td>
+            <td>
+                @client.firstName
+                <input id="CfirstNameVC_@innerIndex@Model.Item2" hidden value="@client.firstName" />
+            </td>
+            <td>
+                @client.lastName
+                <input id="ClastNameVC_@innerIndex@Model.Item2" hidden value="@client.lastName" />
+            </td>
+            <td>
+                @client.phoneNumber
+                <input id="CphoneNumberVC_@innerIndex@Model.Item2" hidden value="@client.phoneNumber" />
+            </td>
+            <td>
+                @client.email
+                <input id="CemailVC_@innerIndex@Model.Item2" hidden value="@client.email" />
+            </td>
+            <td>
+                @if (client.isAdult)
+                {
+                    <p>TRUE</p>
+                    <input hidden type="checkbox" id="CisAdultVC_@innerIndex@Model.Item2" value="true" checked />
+                }
+                else
+                {
+                    <p>FALSE</p>
+                    <input hidden type="checkbox" id="CisAdultVC_@innerIndex@Model.Item2" value="true" />
+                }
+            </td>
+            <td>
+                <button type="button" onclick="SetUserValuesInInput(@innerIndex,@Model.Item2)">Select this user</button>
+            </td>
+        </tr>
+            @*<label for="CfirstNameVC_@Model.Item2">First Name: </label>
+            <p >@client.firstName</p>
+            <label for="ClastNameVC_@Model.Item2">Last Name: </label>
+            <p id="ClastNameVC_@Model.Item2">@client.lastName</p>
+            <label for="CphoneNumberVC_@Model.Item2">Phone Number: </label>
+            <p id="CphoneNumberVC_@Model.Item2">@client.phoneNumber</p>
+            <label for="CemailVC_@Model.Item2">Email: </label>
+            <p id="CemailVC_@Model.Item2">@client.email</p>
+            <label for="CisAdultVC_@Model.Item2">Adult: </label>
+            if (client.isAdult)
+            {
+                <input type="checkbox" id="CisAdultVC_@Model.Item2" value="true" checked />
+            }
+            else
+            {
+                <input type="checkbox" id="CisAdultVC_@Model.Item2" value="true" />
+            }*@
+            @*<p id="CIDVC_@Model.Item2" hidden>@client.ID</p>
+            <br />
+            
+            <hr />*@
+            innerIndex++;
+        }
+    </tbody>
+</table>
+
+@Html.PagedListPager((IPagedList)Model.Item1, page => Url.Action("ReloadListedClientViewComp", new { page, whichVC = Model.Item2 }), PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions()
+{
+    HttpMethod = "POST",
+    UpdateTargetId = "ClientViewComp_" + Model.Item2
+}))
+<hr />
+<hr />
+<hr />

@@ -10,33 +10,52 @@
 
 
 <script>
-    $(document).ready(function () {
-        document.getElementById("forbtn").addEventListener("click", bruh);
-    });
-
-    function bruh() {
-        @*$("#UserInputListed")
-            .html("@for (int i = 0; i < 5; i++) { <p>@i</p>}");*@
-        for (i = 0; i < 2; i++) {
+    function ListUserInputs(howMany) {
+        for (i = 0; i < Math.abs(howMany); i++) {
             $.get("@Url.Action("OnGetClientReservationInputPartial", "Reservations")", { whichVC:i + 2}, function (data) {
                 $("#UserInputListed")
                     .append(data);
             });
-
         }
-
-
     }
 
     function ReloadViewComp(whichVC) {
         $.ajax({
             url: '@Url.Action("ReloadListedClientViewComp", "Reservations")',
             type: "POST",
-            data: { firstName: $(`#firstName_${whichVC}`).val(), lastName: $(`#lastName_${whichVC}`).val() },
+            data: { firstName: $(`#firstName_${whichVC}`).val(), lastName: $(`#lastName_${whichVC}`).val(), "whichVC": whichVC },
             success: function (data) {
                 $(`#ClientViewComp_${whichVC}`).html(data);
             }
         })
+    }
+
+    $(document).ready(function () {
+        var pageSize = Cookies.get("pageSize");
+        if (pageSize !== undefined) {
+            $(`#${pageSize}`).prop('checked', true);
+        }
+        document.getElementById("reservationDate").min = new Date().toISOString().split("T")[0];
+    });
+
+    function UpCookie(evn, whichVC) {
+        Cookies.set("pageSize", evn.value);
+        ReloadViewComp(whichVC);
+    }
+
+    function SetUserValuesInInput(innerIndex, whichVC) {
+        $(`#TBAID_${whichVC}`).val($(`#CIDVC_${innerIndex}${whichVC}`).val());
+        //$(`#TBAfirstName_${whichVC}`).val($(`#CfirstNameVC_${innerIndex}${whichVC}`).val());
+        //$(`#TBAlastName_${whichVC}`).val($(`#ClastNameVC_${innerIndex}${whichVC}`).val());
+        //$(`#TBAphoneNumber_${whichVC}`).val($(`#CphoneNumberVC_${innerIndex}${whichVC}`).val());
+        //$(`#TBAemail_${whichVC}`).val($(`#CemailVC_${innerIndex}${whichVC}`).val());
+        //if ($(`#CisAdultVC_${innerIndex}${whichVC}`).is(':checked')) {
+        //    document.getElementById(`TBAisAdult_${whichVC}`).checked = true;
+        //}
+    }
+
+    function releaseDateMinValUpdate() {
+        document.getElementById("releaseDate").min = document.getElementById("reservationDate").value;
     }
 
 </script>
@@ -51,12 +70,12 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="reservationDate" class="control-label"></label>
-                <input asp-for="reservationDate" class="form-control" />
+                <input asp-for="reservationDate" class="form-control" id="reservationDate" onchange="releaseDateMinValUpdate()"/>
                 <span asp-validation-for="reservationDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="releaseDate" class="control-label"></label>
-                <input asp-for="releaseDate" class="form-control" />
+                <input asp-for="releaseDate" class="form-control" id="releaseDate"/>
                 <span asp-validation-for="releaseDate" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
@@ -74,7 +93,10 @@
                 <input asp-for="finalPrice" class="form-control" />
                 <span asp-validation-for="finalPrice" class="text-danger"></span>
             </div>*@
-            <button id="forbtn" type="button">FOr</button>
+            @*<button id="forbtn" type="button">FOr</button>*@
+            <p>How many users will be in this room?</p>
+            <input type="number" id="userInputsNumber"/>
+            <input type="button" value="Load User Inputs" onclick="ListUserInputs($('userInputsNumber').val())"/>
             <div id="UserInputListed">
                 
             </div>

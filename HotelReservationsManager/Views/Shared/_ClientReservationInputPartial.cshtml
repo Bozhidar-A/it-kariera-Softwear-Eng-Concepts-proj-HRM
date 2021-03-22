@@ -1,19 +1,30 @@
 ﻿@model int
+@{ int listIndex = Model; listIndex -= 2;}
 
 <div id="ClientPartial_@Model">
     <label for="firstName">Client First Name</label>
     <input id="firstName_@Model" />
     <br />
     <label for="lastName">Client Last Name</label>
-    <input id="lastName_@Model"/>
+    <input id="lastName_@Model" />
     <br />
     <input type="button" value="Search" onclick="ReloadViewComp(@Model)" />
 
+    <p>Client to be added</p>
+    <input id="TBAID_@Model" name="clients[@listIndex].ID" hidden />
+    <input id="TBAID_@Model" name="clients[@listIndex].ID" disabled />
+    <input id="TBAfirstName_@Model" name="clients[@listIndex].firstName" disabled />
+    <input id="TBAlastName_@Model" name="clients[@listIndex].lastName" disabled />
+    <input id="TBAphoneNumber_@Model" name="clients[@listIndex].phoneNumber" disabled />
+    <input id="TBAemail_@Model" name="clients[@listIndex].email" disabled />
+    <input type="checkbox" id="TBAisAdult_@Model" name="clients[@listIndex].isAdult" value="true" disabled />
+
     <br />
+    <hr />
     <div id="ClientViewComp_@Model">
         @*@await Component.InvokeAsync("ListedClients")*@
     </div>
-    
+
 </div>
 
 @*

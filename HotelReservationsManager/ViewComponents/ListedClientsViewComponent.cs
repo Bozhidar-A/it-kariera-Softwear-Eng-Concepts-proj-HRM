@@ -19,7 +19,7 @@ namespace HotelReservationsManager.ViewComponents
             _context = context;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(int? page, string firstName, string lastName)
+        public async Task<IViewComponentResult> InvokeAsync(int? page, string firstName, string lastName, int whichVC)
         {
             //TempData["firstName"] = firstName;
             //TempData["lastName"] = lastName;
@@ -52,7 +52,7 @@ namespace HotelReservationsManager.ViewComponents
             }
             var onePageOfProducts = clients.ToPagedList(pageNumber, pageSize);
 
-            return View(onePageOfProducts);
+            return View((onePageOfProducts, whichVC));
         }
     }
 }

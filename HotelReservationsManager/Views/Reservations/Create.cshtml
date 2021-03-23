@@ -10,8 +10,10 @@
 
 
 <script>
-    function ListUserInputs(howMany) {
-        for (i = 0; i < Math.abs(howMany); i++) {
+    function ListUserInputs() {
+        var howMany = Math.abs($('#userInputsHowMany').val());
+        $("#UserInputListed").html(null);
+        for (i = 0; i < howMany; i++) {
             $.get("@Url.Action("OnGetClientReservationInputPartial", "Reservations")", { whichVC:i + 2}, function (data) {
                 $("#UserInputListed")
                     .append(data);
@@ -45,6 +47,7 @@
 
     function SetUserValuesInInput(innerIndex, whichVC) {
         $(`#TBAID_${whichVC}`).val($(`#CIDVC_${innerIndex}${whichVC}`).val());
+        $(`#TBAHID_${whichVC}`).val($(`#CIDVC_${innerIndex}${whichVC}`).val());
         //$(`#TBAfirstName_${whichVC}`).val($(`#CfirstNameVC_${innerIndex}${whichVC}`).val());
         //$(`#TBAlastName_${whichVC}`).val($(`#ClastNameVC_${innerIndex}${whichVC}`).val());
         //$(`#TBAphoneNumber_${whichVC}`).val($(`#CphoneNumberVC_${innerIndex}${whichVC}`).val());
@@ -95,8 +98,8 @@
             </div>*@
             @*<button id="forbtn" type="button">FOr</button>*@
             <p>How many users will be in this room?</p>
-            <input type="number" id="userInputsNumber"/>
-            <input type="button" value="Load User Inputs" onclick="ListUserInputs($('userInputsNumber').val())"/>
+            <input type="number" id="userInputsHowMany"/>
+            <input type="button" value="Load User Inputs" onclick="ListUserInputs()"/>
             <div id="UserInputListed">
                 
             </div>

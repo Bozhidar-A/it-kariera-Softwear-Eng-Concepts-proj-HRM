@@ -47,14 +47,13 @@
 
     function SetUserValuesInInput(innerIndex, whichVC) {
         $(`#TBAID_${whichVC}`).val($(`#CIDVC_${innerIndex}${whichVC}`).val());
-        $(`#TBAHID_${whichVC}`).val($(`#CIDVC_${innerIndex}${whichVC}`).val());
-        //$(`#TBAfirstName_${whichVC}`).val($(`#CfirstNameVC_${innerIndex}${whichVC}`).val());
-        //$(`#TBAlastName_${whichVC}`).val($(`#ClastNameVC_${innerIndex}${whichVC}`).val());
-        //$(`#TBAphoneNumber_${whichVC}`).val($(`#CphoneNumberVC_${innerIndex}${whichVC}`).val());
-        //$(`#TBAemail_${whichVC}`).val($(`#CemailVC_${innerIndex}${whichVC}`).val());
-        //if ($(`#CisAdultVC_${innerIndex}${whichVC}`).is(':checked')) {
-        //    document.getElementById(`TBAisAdult_${whichVC}`).checked = true;
-        //}
+        $(`#TBAfirstName_${whichVC}`).val($(`#CfirstNameVC_${innerIndex}${whichVC}`).val());
+        $(`#TBAlastName_${whichVC}`).val($(`#ClastNameVC_${innerIndex}${whichVC}`).val());
+        $(`#TBAphoneNumber_${whichVC}`).val($(`#CphoneNumberVC_${innerIndex}${whichVC}`).val());
+        $(`#TBAemail_${whichVC}`).val($(`#CemailVC_${innerIndex}${whichVC}`).val());
+        if ($(`#CisAdultVC_${innerIndex}${whichVC}`).is(':checked')) {
+            document.getElementById(`TBAisAdult_${whichVC}`).checked = true;
+        }
     }
 
     function releaseDateMinValUpdate() {

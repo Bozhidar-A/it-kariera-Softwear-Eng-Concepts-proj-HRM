@@ -11,13 +11,19 @@
     <input type="button" value="Search" onclick="ReloadViewComp(@Model)" />
 
     <p>Client to be added</p>
-    <input id="TBAHID_@Model" name="clients[@listIndex].ID" hidden />
-    <input id="TBAID_@Model" name="clients[@listIndex].ID" disabled />
-    <input id="TBAfirstName_@Model" name="clients[@listIndex].firstName" disabled />
-    <input id="TBAlastName_@Model" name="clients[@listIndex].lastName" disabled />
-    <input id="TBAphoneNumber_@Model" name="clients[@listIndex].phoneNumber" disabled />
-    <input id="TBAemail_@Model" name="clients[@listIndex].email" disabled />
-    <input type="checkbox" id="TBAisAdult_@Model" name="clients[@listIndex].isAdult" value="true" disabled />
+    <p>ID</p>
+    <input id="TBAID_@Model" name="clients[@listIndex].ID" readonly/>
+    <p>First Name</p>
+    <input id="TBAfirstName_@Model" name="clients[@listIndex].firstName" readonly />
+    <p>Last Name</p>
+    <input id="TBAlastName_@Model" name="clients[@listIndex].lastName" readonly />
+    <p>Phone Number</p>
+    <input id="TBAphoneNumber_@Model" name="clients[@listIndex].phoneNumber" readonly />
+    <p>Email</p>
+    <input id="TBAemail_@Model" name="clients[@listIndex].email" readonly />
+    <p>Adult</p>
+    <input type="checkbox" id="TBAisAdult_@Model" name="clients[@listIndex].isAdult" value="true" readonly />
+    @*<input type="checkbox" id="TBAisAdult_@Model" name="clients[@listIndex].bCurrInReservation" value="true" hidden checked/>*@
 
     <br />
     <hr />

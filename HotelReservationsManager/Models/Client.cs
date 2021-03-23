@@ -22,5 +22,7 @@ namespace HotelReservationsManager.Models
         public string email { get; set; }
         [Required]
         public bool isAdult { get; set; }
+        public IList<Reservation> reservations { get; set; }
+        public bool bCurrInReservation { get; set; }
     }
 }

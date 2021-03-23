@@ -26,7 +26,8 @@ namespace HotelReservationsManager.ViewComponents
 
             IQueryable<Client> clients = _context.Client.
                 Where(fn => fn.firstName.Contains(String.IsNullOrWhiteSpace(firstName) ? "" : firstName.Trim())).
-                Where(ln => ln.lastName.Contains(String.IsNullOrWhiteSpace(lastName) ? "" : lastName.Trim()));
+                Where(ln => ln.lastName.Contains(String.IsNullOrWhiteSpace(lastName) ? "" : lastName.Trim())).
+                Where(b => b.bCurrInReservation == false);
 
 
             int pageSize = 0; //default is 10

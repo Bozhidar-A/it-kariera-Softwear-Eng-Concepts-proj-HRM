@@ -12,7 +12,7 @@ namespace HotelReservationsManager.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
         public DbSet<HotelReservationsManager.Models.Client> Client { get; set; }
         public DbSet<HotelReservationsManager.Models.Room> Room { get; set; }

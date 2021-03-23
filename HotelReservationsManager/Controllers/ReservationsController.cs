@@ -75,7 +75,7 @@ namespace HotelReservationsManager.Controllers
                 return NotFound();
             }
 
-            var reservation = await _context.Reservation
+            var reservation = await _context.Reservation.Include(cl => cl.clients)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (reservation == null)
             {
@@ -98,9 +98,19 @@ namespace HotelReservationsManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,reservationDate,releaseDate,breakfast,allInclusive,finalPrice,clients")] Reservation reservation)
         {
-            //reservation.clients[0] = _context.Client.Where(cl => cl.ID == reservation.clients[0].ID).First();
             if (ModelState.IsValid)
             {
+                if (reservation.clients.Count != reservation.clients.Distinct().Count())
+                {
+                    return View(reservation);
+                    //user has inputed same user more then once
+                }
+                //todo move this to attrebute^
+                for (int i = 0; i < reservation.clients.Count; i++)
+                {
+                    reservation.clients[i] = _context.Client.Where(cl => cl.ID == reservation.clients[i].ID).First();
+                    reservation.clients[i].bCurrInReservation = true;
+                }
                 _context.Add(reservation);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -121,6 +131,7 @@ namespace HotelReservationsManager.Controllers
             {
                 return NotFound();
             }
+            await _context.Entry(reservation).Collection(cl => cl.clients).LoadAsync();
             return View(reservation);
         }
 
@@ -183,6 +194,11 @@ namespace HotelReservationsManager.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var reservation = await _context.Reservation.FindAsync(id);
+            await _context.Entry(reservation).Collection(cl => cl.clients).LoadAsync();
+            foreach (var cl in reservation.clients)
+            {
+                cl.bCurrInReservation = false;
+            }
             _context.Reservation.Remove(reservation);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

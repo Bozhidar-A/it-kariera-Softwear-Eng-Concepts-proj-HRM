@@ -42,37 +42,26 @@ namespace HotelReservationsManager.Controllers
 
             IQueryable<Room> rooms;
 
-            if (capacity == 0)
+            if(bSearch)//user is using the search
             {
-                if (bSearch)
+                if(capacity == 0)//ints without value are binded to 0
                 {
                     rooms = _context.Room.
                         Where(t => type == "Select Apartment Type" ? t.type.Contains("") : t.type == type).
-                        Where(bF => bFree ? bF.free == true : bF.free == false);             
+                        Where(bF => bF.free == bFree);
                 }
-                else
+                else//search by all paramaters
                 {
-                    rooms = _context.Room;
+                    rooms = _context.Room.
+                        Where(c => c.capacity == capacity).
+                        Where(t => type == "Select Apartment Type" ? t.type.Contains("") : t.type == type).
+                        Where(bF => bF.free == bFree);
                 }
             }
-            else
+            else//first load, load everything
             {
-                if(bSearch)
-                {
-                    rooms = _context.Room.
-                        Where(c => c.capacity == capacity).
-                        Where(t => t.type == "Select Apartment Type" ? t.type.Contains("") : t.type == type).
-                        Where(bF => bFree ? bF.free == true : bF.free == false);
-                }
-                else
-                {
-                    rooms = _context.Room.
-                        Where(c => c.capacity == capacity).
-                        Where(t => t.type == "Select Apartment Type" ? t.type.Contains("") : t.type == type);
-                }
+                rooms = _context.Room;
             }
-            
-
 
             //this is bad as it can take the whole db
             //todo optimise by rewriting
@@ -144,6 +133,7 @@ namespace HotelReservationsManager.Controllers
         {
             if (ModelState.IsValid)
             {
+                room.free = true;
                 _context.Add(room);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

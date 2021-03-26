@@ -3,6 +3,15 @@
 @using X.PagedList;
 @using X.PagedList.Mvc.Core.Common;
 
+<script>
+    $(document).ready(function () {
+        var pageSize = Cookies.get("pageSize");
+        if (pageSize !== undefined) {
+            $(`#${pageSize}`).prop('checked', true);
+        }
+    });
+</script>
+
 <div class="form-check form-check-inline">
     <input id="1" class="form-check-input" type="radio" name="inlineRadioOptions" value="1" onclick="UpCookie(this, @Model.Item2)">
     <label class="form-check-label" for="inlineRadio1">1</label>

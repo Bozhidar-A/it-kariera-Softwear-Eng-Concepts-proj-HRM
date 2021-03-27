@@ -10,6 +10,18 @@
 
 
 <script>
+
+    function ReloadRoomVC() {
+       $.ajax({
+            url: '@Url.Action("ReloadRoomSelectorViewComp", "Reservations")',
+           type: "POST",
+           data: { capacity: $(`#roomCapacity`).val(), type: $(`#roomType option:selected`).text(), bSearch: $("#roombSearch").val() },
+            success: function (data) {
+                $(`#RoomViewComp`).html(data);
+            }
+        })
+    }
+
     function ListUserInputs() {
         var howMany = Math.abs($('#userInputsHowMany').val());
         $("#UserInputListed").html(null);
@@ -33,16 +45,17 @@
     }
 
     $(document).ready(function () {
-        var pageSize = Cookies.get("pageSize");
-        if (pageSize !== undefined) {
-            $(`#${pageSize}`).prop('checked', true);
-        }
         document.getElementById("reservationDate").min = new Date().toISOString().split("T")[0];
     });
 
     function UpCookie(evn, whichVC) {
         Cookies.set("pageSize", evn.value);
         ReloadViewComp(whichVC);
+    }
+
+    function UpCookieRoom(evn) {
+        Cookies.set("pageSize", evn.value);
+        ReloadRoomVC();
     }
 
     function SetUserValuesInInput(innerIndex, whichVC) {
@@ -54,6 +67,14 @@
         if ($(`#CisAdultVC_${innerIndex}${whichVC}`).is(':checked')) {
             document.getElementById(`TBAisAdult_${whichVC}`).checked = true;
         }
+    }
+
+    function SetRoomValuesInInput(innerIndex) {
+        $(`#TBARIDVC`).val($(`#RIDVC_${innerIndex}`).val());
+        $(`#TBARtypeVC`).val($(`#RtypeVC_${innerIndex}`).val());
+        $(`#TBARcapacityVC`).val($(`#RcapacityVC_${innerIndex}`).val());
+        $(`#TBARbedAdultPriceVC`).val($(`#RbedAdultPriceVC_${innerIndex}`).val());
+        $(`#TBARbedChildPriceVC`).val($(`#RbedChildPriceVC_${innerIndex}`).val());
     }
 
     function releaseDateMinValUpdate() {
@@ -72,12 +93,12 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="reservationDate" class="control-label"></label>
-                <input asp-for="reservationDate" class="form-control" id="reservationDate" onchange="releaseDateMinValUpdate()"/>
+                <input asp-for="reservationDate" type="date" class="form-control" id="reservationDate" onchange="releaseDateMinValUpdate()" />
                 <span asp-validation-for="reservationDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="releaseDate" class="control-label"></label>
-                <input asp-for="releaseDate" class="form-control" id="releaseDate"/>
+                <input asp-for="releaseDate" type="date" class="form-control" id="releaseDate" />
                 <span asp-validation-for="releaseDate" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
@@ -90,17 +111,15 @@
                     <input class="form-check-input" asp-for="allInclusive" /> @Html.DisplayNameFor(model => model.allInclusive)
                 </label>
             </div>
-            @*<div class="form-group">
-                <label asp-for="finalPrice" class="control-label"></label>
-                <input asp-for="finalPrice" class="form-control" />
-                <span asp-validation-for="finalPrice" class="text-danger"></span>
-            </div>*@
-            @*<button id="forbtn" type="button">FOr</button>*@
-            <p>How many users will be in this room?</p>
-            <input type="number" id="userInputsHowMany"/>
-            <input type="button" value="Load User Inputs" onclick="ListUserInputs()"/>
+            <h2>Which room are the users going to stay in?</h2>
+            <div id="RoomInput">
+                <partial name="_RoomReservationInputPartial" />
+            </div>
+            <h2>How many users will be in this room?</h2>
+            <input type="number" id="userInputsHowMany" />
+            <input type="button" value="Load User Inputs" onclick="ListUserInputs()" />
             <div id="UserInputListed">
-                
+
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

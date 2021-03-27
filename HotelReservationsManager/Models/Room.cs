@@ -16,7 +16,6 @@ namespace HotelReservationsManager.Models
         //html select
         [Required]
         public string type { get; set; }
-        [Required]
         public bool free { get; set; }
         [Required]
         [Column(TypeName = "decimal(18,2)")]

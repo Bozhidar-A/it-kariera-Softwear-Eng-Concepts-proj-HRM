@@ -55,16 +55,16 @@ namespace HotelReservationsManager.Controllers
         public IActionResult OnGetClientReservationInputPartial(int whichVC)
         {
             return PartialView("_ClientReservationInputPartial", whichVC);
-            //return new PartialViewResult
-            //{
-            //    ViewName = "_ClientReservationInputPartial",
-            //    Model = whichVC
-            //};
         }
 
         public IActionResult ReloadListedClientViewComp(string firstName, string lastName, int whichVC, int? page)
         {
             return ViewComponent("ListedClients", new { firstName = firstName, lastName = lastName, whichVC = whichVC, page = page });
+        }
+
+        public IActionResult ReloadRoomSelectorViewComp(int? page, int capacity, string type, bool bSearch)
+        {
+            return ViewComponent("RoomSelector", new { page = page, capacity = capacity, type = type, bSearch = bSearch });
         }
 
         // GET: Reservations/Details/5
@@ -96,7 +96,7 @@ namespace HotelReservationsManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,reservationDate,releaseDate,breakfast,allInclusive,finalPrice,clients")] Reservation reservation)
+        public async Task<IActionResult> Create([Bind("ID,reservationDate,releaseDate,breakfast,allInclusive,finalPrice,clients,room")] Reservation reservation)
         {
             if (ModelState.IsValid)
             {
@@ -111,6 +111,8 @@ namespace HotelReservationsManager.Controllers
                     reservation.clients[i] = _context.Client.Where(cl => cl.ID == reservation.clients[i].ID).First();
                     reservation.clients[i].bCurrInReservation = true;
                 }
+                reservation.room = _context.Room.Where(r => r.ID == reservation.room.ID).First();
+                reservation.room.free = false;
                 _context.Add(reservation);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

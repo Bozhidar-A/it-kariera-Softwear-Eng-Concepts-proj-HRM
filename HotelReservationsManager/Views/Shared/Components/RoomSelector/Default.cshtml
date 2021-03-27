@@ -1,0 +1,73 @@
+﻿@model IPagedList<HotelReservationsManager.Models.Room>
+@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@using X.PagedList.Mvc.Core.Common;
+
+<script>
+    $(document).ready(function () {
+        var pageSize = Cookies.get("pageSize");
+        if (pageSize !== undefined) {
+            $(`#${pageSize}`).prop('checked', true);
+        }
+    });
+</script>
+
+<div class="form-check form-check-inline">
+    <input id="1" class="form-check-input" type="radio" name="inlineRadioOptions" value="1" onclick="UpCookieRoom(this)">
+    <label class="form-check-label" for="inlineRadio1">1</label>
+</div>
+<div class="form-check form-check-inline">
+    <input id="10" class="form-check-input" type="radio" name="inlineRadioOptions" value="10" onclick="UpCookieRoom(this)">
+    <label class="form-check-label" for="inlineRadio1">10</label>
+</div>
+<div class="form-check form-check-inline">
+    <input id="25" class="form-check-input" type="radio" name="inlineRadioOptions" value="25" onclick="UpCookieRoom(this)">
+    <label class="form-check-label" for="inlineRadio1">25</label>
+</div>
+<div class="form-check form-check-inline">
+    <input id="50" class="form-check-input" type="radio" name="inlineRadioOptions" value="50" onclick="UpCookieRoom(this)">
+    <label class="form-check-label" for="inlineRadio1">50</label>
+</div>
+
+<table>
+    <tbody>
+        @*@foreach (var room in Model)*@
+        @for (int i = 0; i < Model.Count; i++)
+        {
+        <tr>
+            <td>
+                @Model[i].ID
+                <input id="RIDVC_@i" hidden value="@Model[i].ID" />
+            </td>
+            <td>
+                @Model[i].type
+                <input id="RtypeVC_@i" hidden value="@Model[i].type" />
+            </td>
+            <td>
+                @Model[i].capacity
+                <input id="RcapacityVC_@i" hidden value="@Model[i].capacity" />
+            </td>
+            <td>
+                @Model[i].bedAdultPrice
+                <input id="RbedAdultPriceVC_@i" hidden value="@Model[i].bedAdultPrice" />
+            </td>
+            <td>
+                @Model[i].bedChildPrice
+                <input id="RbedChildPriceVC_@i" hidden value="@Model[i].bedChildPrice" />
+            </td>
+            <td>
+                <button type="button" onclick="SetRoomValuesInInput(@i)">Select this room</button>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+@Html.PagedListPager((IPagedList)Model, page => Url.Action("ReloadRoomSelectorViewComp", new { page }), PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions()
+{
+    HttpMethod = "POST",
+    UpdateTargetId = "RoomViewComp"
+}))
+<hr />
+<hr />
+<hr />

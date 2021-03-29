@@ -41,18 +41,21 @@ namespace HotelReservationsManager.ViewComponents
                 if (capacity == 0)//ints without value are binded to 0
                 {
                     rooms = _context.Room.
-                        Where(t => type == "Select Apartment Type" ? t.type.Contains("") : t.type == type);
+                        Where(t => type == "Select Apartment Type" ? t.type.Contains("") : t.type == type)
+                        .Where(f => f.free == true);
                 }
                 else//search by all paramaters
                 {
                     rooms = _context.Room.
                         Where(c => c.capacity == capacity).
-                        Where(t => t.type == "Select Apartment Type" ? t.type.Contains("") : t.type == type);
+                        Where(t => t.type == "Select Apartment Type" ? t.type.Contains("") : t.type == type)
+                        .Where(f => f.free == true);
                 }
             }
             else//first load, load everything
             {
-                rooms = _context.Room;
+                rooms = _context.Room
+                    .Where(f => f.free == true);
             }
 
             int pageSize = 0; //default is 10

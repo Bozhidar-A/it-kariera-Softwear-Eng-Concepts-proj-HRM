@@ -9,6 +9,7 @@ using HotelReservationsManager.Data;
 using HotelReservationsManager.Models;
 using X.PagedList;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace HotelReservationsManager.Controllers
 {
@@ -16,9 +17,18 @@ namespace HotelReservationsManager.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public ReservationsController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        //Note. No prices were specified for this in the doc. Making numbers up
+        private const decimal breakfastPrice = 20m;
+
+        private const decimal allInclusivePrice = 50m;
+
+        public ReservationsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+
+            _userManager = userManager;
         }
 
         // GET: Reservations
@@ -67,6 +77,15 @@ namespace HotelReservationsManager.Controllers
             return ViewComponent("RoomSelector", new { page = page, capacity = capacity, type = type, bSearch = bSearch });
         }
 
+        [NonAction]
+        public int NumberOfNights(DateTime date1, DateTime date2)
+        {
+            var frm = date1 < date2 ? date1 : date2;
+            var to = date1 < date2 ? date2 : date1;
+            var totalDays = (int)(to - frm).TotalDays;
+            return totalDays > 1 ? totalDays : 1;
+        }
+
         // GET: Reservations/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -76,6 +95,8 @@ namespace HotelReservationsManager.Controllers
             }
 
             var reservation = await _context.Reservation.Include(cl => cl.clients)
+                .Include(u => u.applicationUser)
+                .Include(r => r.room)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (reservation == null)
             {
@@ -106,13 +127,50 @@ namespace HotelReservationsManager.Controllers
                     //user has inputed same user more then once
                 }
                 //todo move this to attrebute^
+
+                //add user who made reservation
+                reservation.applicationUser = await _userManager.GetUserAsync(User);
+
+                //get clients with ef 
                 for (int i = 0; i < reservation.clients.Count; i++)
                 {
                     reservation.clients[i] = _context.Client.Where(cl => cl.ID == reservation.clients[i].ID).First();
                     reservation.clients[i].bCurrInReservation = true;
                 }
+
+                //get room with ef
                 reservation.room = _context.Room.Where(r => r.ID == reservation.room.ID).First();
                 reservation.room.free = false;
+
+                //calculate price
+                for(int i = 0; i < NumberOfNights(reservation.reservationDate, reservation.releaseDate); i++)
+                {
+                    //for over the nights the users will be stayiing
+                    foreach(Client cl in reservation.clients)
+                    {
+                        //add the appropriate price
+                        if (cl.isAdult)
+                        {
+                            reservation.finalPrice += reservation.room.bedAdultPrice;
+                        }
+                        else
+                        {
+                            reservation.finalPrice += reservation.room.bedChildPrice;
+                        }
+                    }
+                }
+
+                //add price for bnuses if needed
+                if(reservation.breakfast)
+                {
+                    reservation.finalPrice += breakfastPrice;
+                }
+
+                if(reservation.allInclusive)
+                {
+                    reservation.finalPrice += allInclusivePrice;
+                }
+
                 _context.Add(reservation);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -195,12 +253,18 @@ namespace HotelReservationsManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var reservation = await _context.Reservation.FindAsync(id);
-            await _context.Entry(reservation).Collection(cl => cl.clients).LoadAsync();
+            //var reservation = await _context.Reservation.FindAsync(id);
+            //await _context.Entry(reservation).Collection(cl => cl.clients).LoadAsync();
+            //await _context.Entry(reservation).Property(r => r.room).LoadAsync();
+            var reservation = await _context.Reservation.Include(cl => cl.clients)
+                .Include(u => u.applicationUser)
+                .Include(r => r.room)
+                .FirstOrDefaultAsync(m => m.ID == id);
             foreach (var cl in reservation.clients)
             {
                 cl.bCurrInReservation = false;
             }
+            reservation.room.free = true;
             _context.Reservation.Remove(reservation);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

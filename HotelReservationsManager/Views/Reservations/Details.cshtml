@@ -46,6 +46,29 @@
 {
     <p>@cl.firstName</p>
 }
+
+<table>
+    <tbody>
+        <tr>
+            <td>
+                @Model.room.ID
+            </td>
+            <td>
+                @Model.room.capacity
+            </td>
+            <td>
+                @Model.room.bedAdultPrice
+            </td>
+            <td>
+                @Model.room.bedChildPrice
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.room.free)
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p>@Model.applicationUser.Email</p>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
     <a asp-action="Index">Back to List</a>

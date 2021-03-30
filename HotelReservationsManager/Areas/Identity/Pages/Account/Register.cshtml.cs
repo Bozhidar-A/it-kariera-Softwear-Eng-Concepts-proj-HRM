@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using FlightManager.Attributes;
 
 namespace HotelReservationsManager.Areas.Identity.Pages.Account
 {
@@ -52,6 +53,15 @@ namespace HotelReservationsManager.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
+            [Display(Name = "Username")]
+            public string Username { get; set; }
+
+            [Required]
+            [Phone]
+            [Display(Name = "Phone number")]
+            public string phoneNumber { get; set; }
+
+            [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
@@ -61,6 +71,24 @@ namespace HotelReservationsManager.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            //extended
+            [Required]
+            [Display(Name = "First Name")]
+            public string firstName { get; set; }
+
+            [Required]
+            [Display(Name = "Last Name")]
+            public string lastName { get; set; }
+
+            [Required]
+            [Display(Name = "Middle Name")]
+            public string middleName { get; set; }
+
+            [Required]
+            [Display(Name = "EGN")]
+            [ValidEGN]
+            public string EGN { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -75,7 +103,15 @@ namespace HotelReservationsManager.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+                var user = new ApplicationUser { UserName = Input.Username, 
+                    Email = Input.Email, 
+                    hireDate = DateTime.UtcNow,
+                    firstName = Input.firstName,
+                    middleName = Input.middleName,
+                    lastName = Input.lastName,
+                    EGN = Input.EGN,
+                    PhoneNumber = Input.phoneNumber
+                };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

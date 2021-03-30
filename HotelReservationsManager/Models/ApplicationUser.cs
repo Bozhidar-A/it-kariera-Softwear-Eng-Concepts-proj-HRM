@@ -12,7 +12,7 @@ namespace HotelReservationsManager.Models
         public string middleName { get; set; }
         public string lastName { get; set; }
         //TODO add EGN validation
-        public int EGN { get; set; }
+        public string EGN { get; set; }
         public DateTime hireDate { get; set; }
         public bool isActive { get; set; }
         public DateTime? fireDate { get; set; }

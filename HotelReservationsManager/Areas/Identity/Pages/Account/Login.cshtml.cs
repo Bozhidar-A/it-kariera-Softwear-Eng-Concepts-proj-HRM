@@ -86,6 +86,11 @@ namespace HotelReservationsManager.Areas.Identity.Pages.Account
                 //asp sets username and email to the same val, seperating them causes problems
                 //cannot edit PasswordSignInAsync
                 var userName = await _userManager.FindByEmailAsync(Input.Email);
+                if(userName == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return Page();
+                }
                 var result = await _signInManager.PasswordSignInAsync(userName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {

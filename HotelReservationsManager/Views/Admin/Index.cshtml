@@ -43,19 +43,19 @@
 
 <form asp-action="Index">
     <label for="userName">Username:</label>
-    <input name="userName" id="userName" value="userName"/>
+    <input name="userName" id="userName" value="@TempData["userName"]"/>
     <br />
     <label for="email">Email:</label>
-    <input name="email" id="email" value="email"/>
+    <input name="email" id="email" value="@TempData["email"]"/>
     <br />
     <label for="firstName">First Name:</label>
-    <input name="firstName" id="firstName" value="firstName"/>
+    <input name="firstName" id="firstName" value="@TempData["firstName"]"/>
     <br />
     <label for="middleName">Middle Name:</label>
-    <input name="middleName" id="middleName" value="middleName"/>
+    <input name="middleName" id="middleName" value="@TempData["middleName"]"/>
     <br />
     <label for="lastName">Last Name:</label>
-    <input name="lastName" id="lastName" value="lastName"/>
+    <input name="lastName" id="lastName" value="@TempData["lastName"]"/>
     <br />
     <input type="submit" value="Search" />
 </form>

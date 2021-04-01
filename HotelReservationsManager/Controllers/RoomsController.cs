@@ -215,7 +215,9 @@ namespace HotelReservationsManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var room = await _context.Room.FindAsync(id);
+            var room = await _context.Room.
+                Include(r => r.reservations).
+                FirstAsync(m => m.ID == id);
             _context.Room.Remove(room);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

@@ -23,5 +23,6 @@ namespace HotelReservationsManager.Models
         [Required]
         [Column(TypeName = "decimal(18,2)")]
         public decimal bedChildPrice { get; set; }
+        public IList<Reservation> reservations { get; set; }
     }
 }

@@ -10,6 +10,7 @@ using HotelReservationsManager.Models;
 using X.PagedList;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HotelReservationsManager.Controllers
 {
@@ -117,6 +118,7 @@ namespace HotelReservationsManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin,user")]
         public async Task<IActionResult> Create([Bind("ID,reservationDate,releaseDate,breakfast,allInclusive,finalPrice,clients,room")] Reservation reservation)
         {
             if (ModelState.IsValid)
@@ -260,11 +262,18 @@ namespace HotelReservationsManager.Controllers
                 .Include(u => u.applicationUser)
                 .Include(r => r.room)
                 .FirstOrDefaultAsync(m => m.ID == id);
+
             foreach (var cl in reservation.clients)
             {
                 cl.bCurrInReservation = false;
             }
-            reservation.room.free = true;
+
+            //room has been deleted from database
+            if(reservation.room != null)
+            {
+                reservation.room.free = true;
+            }
+            
             _context.Reservation.Remove(reservation);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

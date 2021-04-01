@@ -1,0 +1,35 @@
+﻿@model HotelReservationsManager.Models.ApplicationUser
+
+<table class="table">
+    <tbody>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.firstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.middleName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.lastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.hireDate)
+                </td>
+                <td>
+                    <form asp-action="LockOut">
+                        <input type="hidden" value="@Model.Id" name="ID"/>
+                        <input type="submit" value="Lockout user"/>
+                    </form>
+                </td>
+            </tr>
+    </tbody>
+</table>

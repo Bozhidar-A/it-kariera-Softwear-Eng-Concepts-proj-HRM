@@ -1,0 +1,105 @@
+﻿@model IPagedList<HotelReservationsManager.Models.ApplicationUser>
+@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@using X.PagedList.Mvc.Core.Common;
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        var pageSize = Cookies.get("pageSize");
+        if (pageSize !== undefined) {
+            $(`#${pageSize}`).prop('checked', true);
+        }
+    });
+
+    function UpCookie(evn) {
+        Cookies.set("pageSize", evn.value);
+        window.location = '@Url.Action("Index")';
+    }
+
+</script>
+
+<h1>Index</h1>
+
+
+<div class="form-check form-check-inline">
+    <input id="1" class="form-check-input" type="radio" name="inlineRadioOptions" value="1" onclick="UpCookie(this)">
+    <label class="form-check-label" for="inlineRadio1">1</label>
+</div>
+<div class="form-check form-check-inline">
+    <input id="10" class="form-check-input" type="radio" name="inlineRadioOptions" value="10" onclick="UpCookie(this)">
+    <label class="form-check-label" for="inlineRadio1">10</label>
+</div>
+<div class="form-check form-check-inline">
+    <input id="25" class="form-check-input" type="radio" name="inlineRadioOptions" value="25" onclick="UpCookie(this)">
+    <label class="form-check-label" for="inlineRadio1">25</label>
+</div>
+<div class="form-check form-check-inline">
+    <input id="50" class="form-check-input" type="radio" name="inlineRadioOptions" value="50" onclick="UpCookie(this)">
+    <label class="form-check-label" for="inlineRadio1">50</label>
+</div>
+
+<form asp-action="Index">
+    <label for="userName">Username:</label>
+    <input name="userName" id="userName" value="userName"/>
+    <br />
+    <label for="email">Email:</label>
+    <input name="email" id="email" value="email"/>
+    <br />
+    <label for="firstName">First Name:</label>
+    <input name="firstName" id="firstName" value="firstName"/>
+    <br />
+    <label for="middleName">Middle Name:</label>
+    <input name="middleName" id="middleName" value="middleName"/>
+    <br />
+    <label for="lastName">Last Name:</label>
+    <input name="lastName" id="lastName" value="lastName"/>
+    <br />
+    <input type="submit" value="Search" />
+</form>
+
+<br />
+
+<form asp-action="Create">
+    <input type="submit" value="Create" />
+</form>
+
+<table class="table">
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.firstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.middleName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.lastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.hireDate)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page }))

@@ -117,6 +117,14 @@ namespace HotelReservationsManager.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
+                    var resultRole = await _userManager.AddToRoleAsync(user, "user");
+
+                    if(resultRole.Succeeded)
+                    {
+                        _logger.LogInformation("User was added to user role.");
+
+                        return RedirectToAction("Index", "Home");
+                    }
                     //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     //var callbackUrl = Url.Page(
@@ -137,7 +145,7 @@ namespace HotelReservationsManager.Areas.Identity.Pages.Account
                     //    await _signInManager.SignInAsync(user, isPersistent: false);
                     //    return LocalRedirect(returnUrl);
                     //}
-                    return RedirectToAction("Index", "Home");
+                    
                 }
                 foreach (var error in result.Errors)
                 {

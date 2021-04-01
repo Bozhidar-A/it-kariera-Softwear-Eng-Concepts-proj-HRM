@@ -72,6 +72,9 @@ namespace HotelReservationsManager.Controllers
             return View(onePageOfProducts);
         }
 
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Details(string? id)
         {
             if (id == null)
@@ -89,11 +92,16 @@ namespace HotelReservationsManager.Controllers
             return View(client);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create()
         {
             return LocalRedirect("/Identity/Account/Register");
         }
 
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> LockOut(string? ID)
         {
             DateTime twoHundredYears = DateTime.Now;

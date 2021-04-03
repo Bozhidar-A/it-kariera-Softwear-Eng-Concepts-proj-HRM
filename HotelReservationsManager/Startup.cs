@@ -1,6 +1,7 @@
 using doc_migs.Controllers;
 using HotelReservationsManager.Data;
 using HotelReservationsManager.Models;
+using HotelReservationsManager.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -41,6 +42,15 @@ namespace HotelReservationsManager
             services.AddControllersWithViews();
 
             services.AddRazorPages();
+
+            services.AddScoped<IMyScopedService, MyScopedService>();
+
+            services.AddCronJob<UpdateEndedReservations>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = @"0 0 * * *";
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -67,6 +67,7 @@ namespace HotelReservationsManager.Controllers
             }
 
             var client = await _context.Client
+                .Include(r => r.reservations)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (client == null)
             {

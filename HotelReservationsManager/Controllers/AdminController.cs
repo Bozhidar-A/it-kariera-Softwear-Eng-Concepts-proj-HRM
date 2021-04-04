@@ -1,5 +1,6 @@
 ﻿using HotelReservationsManager.Data;
 using HotelReservationsManager.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ using X.PagedList;
 
 namespace HotelReservationsManager.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;

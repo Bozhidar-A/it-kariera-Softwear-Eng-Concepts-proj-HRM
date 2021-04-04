@@ -10,9 +10,11 @@ using HotelReservationsManager.Models;
 using Microsoft.AspNetCore.Http;
 using X.PagedList;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HotelReservationsManager.Controllers
 {
+    [Authorize(Roles = "admin,user")]
     public class RoomsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -115,6 +117,7 @@ namespace HotelReservationsManager.Controllers
         }
 
         // GET: Rooms/Create
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             ViewBag.type = _configuration.GetSection("RoomTypes").Get<List<string>>()
@@ -129,6 +132,7 @@ namespace HotelReservationsManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([Bind("ID,capacity,type,free,bedAdultPrice,bedChildPrice")] Room room)
         {
             if (ModelState.IsValid)
@@ -142,6 +146,7 @@ namespace HotelReservationsManager.Controllers
         }
 
         // GET: Rooms/Edit/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -162,6 +167,7 @@ namespace HotelReservationsManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int id, [Bind("ID,capacity,type,free,bedAdultPrice,bedChildPrice")] Room room)
         {
             if (id != room.ID)
@@ -193,6 +199,7 @@ namespace HotelReservationsManager.Controllers
         }
 
         // GET: Rooms/Delete/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -213,6 +220,7 @@ namespace HotelReservationsManager.Controllers
         // POST: Rooms/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var room = await _context.Room.

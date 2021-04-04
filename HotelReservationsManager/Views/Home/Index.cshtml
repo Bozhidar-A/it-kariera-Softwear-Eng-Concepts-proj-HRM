@@ -2,7 +2,32 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@if (User.Identity.IsAuthenticated)
+{
+    if (this.User.IsInRole("user") || this.User.IsInRole("admin"))
+    {
+        <div class="text-center">
+            <h1 class="display-4">Welcome</h1>
+            <h4>Please select what you want to do.</h4>
+            <div class="d-flex justify-content-between">
+                <a asp-controller="Clients" asp-action="Index">Index of Clients</a>
+                <a asp-controller="Rooms" asp-action="Index">Index of Rooms</a>
+                <a asp-controller="Reservations" asp-action="Index">Index of Reservations</a>
+            </div>
+        </div>
+        if (this.User.IsInRole("admin"))
+        {
+            <div class="text-center">
+                <h4>ADMIN ONLY</h4>
+                <a asp-controller="Admin" asp-action="Index">Index of Admin</a>
+            </div>
+        }
+    }
+
+}
+else
+{
+    <div class="text-center">
+        <h1 class="display-4">You are not logged in. Please log in to use this app.</h1>
+    </div>
+}

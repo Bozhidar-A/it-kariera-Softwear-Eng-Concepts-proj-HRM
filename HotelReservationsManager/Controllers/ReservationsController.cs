@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace HotelReservationsManager.Controllers
 {
+    [Authorize(Roles = "admin,user")]
     public class ReservationsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -118,7 +119,6 @@ namespace HotelReservationsManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "admin,user")]
         public async Task<IActionResult> Create([Bind("ID,reservationDate,releaseDate,breakfast,allInclusive,finalPrice,clients,room")] Reservation reservation)
         {
             if (ModelState.IsValid)

@@ -9,9 +9,11 @@ using HotelReservationsManager.Data;
 using HotelReservationsManager.Models;
 using X.PagedList;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HotelReservationsManager.Controllers
 {
+    [Authorize(Roles = "admin,user")]
     public class ClientsController : Controller
     {
         private readonly ApplicationDbContext _context;

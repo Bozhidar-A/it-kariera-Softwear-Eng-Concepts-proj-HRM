@@ -111,6 +111,12 @@ namespace HotelReservationsManager.Controllers
         // GET: Reservations/Create
         public IActionResult Create()
         {
+            if(!FreeRoomExists())
+            {
+                //no free room exists
+                //go to index
+                return RedirectToAction("Index", "Reservations");
+            }
             return View();
         }
 
@@ -188,12 +194,17 @@ namespace HotelReservationsManager.Controllers
                 return NotFound();
             }
 
-            var reservation = await _context.Reservation.FindAsync(id);
+            var reservation = await _context.Reservation.
+                Include(cl => cl.clients).
+                Include(r => r.room).
+                FirstOrDefaultAsync(m => m.ID == id);
+
+            ViewBag.prevRoomID = reservation.room.ID;
+
             if (reservation == null)
             {
                 return NotFound();
             }
-            await _context.Entry(reservation).Collection(cl => cl.clients).LoadAsync();
             return View(reservation);
         }
 
@@ -202,7 +213,7 @@ namespace HotelReservationsManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,reservationDate,releaseDate,breakfast,allInclusive,finalPrice")] Reservation reservation)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,reservationDate,releaseDate,breakfast,allInclusive,finalPrice,clients,room")] Reservation reservation, int prevRoomID, List<bool> removedUsers)
         {
             if (id != reservation.ID)
             {
@@ -213,6 +224,28 @@ namespace HotelReservationsManager.Controllers
             {
                 try
                 {
+                    //update room
+                    if(reservation.room.ID != prevRoomID)
+                    {
+                        var r = _context.Room.Where(m => m.ID == prevRoomID).First();
+                        r.free = true;
+                    }
+
+                    //update clients
+                    var tempList = reservation.clients;
+
+                    for(int i = 0; i<removedUsers.Count; i++)
+                    {
+                        if(removedUsers[i])
+                        {
+                            var cl = _context.Client.Where(m => m.ID == reservation.clients[i].ID).First();
+                            cl.bCurrInReservation = false;
+                            tempList.RemoveAt(i);
+                        }
+                    }
+
+                    reservation.clients = tempList;
+
                     _context.Update(reservation);
                     await _context.SaveChangesAsync();
                 }
@@ -282,6 +315,11 @@ namespace HotelReservationsManager.Controllers
         private bool ReservationExists(int id)
         {
             return _context.Reservation.Any(e => e.ID == id);
+        }
+
+        private bool FreeRoomExists()
+        {
+            return _context.Room.Any(e => e.free == true);
         }
     }
 }

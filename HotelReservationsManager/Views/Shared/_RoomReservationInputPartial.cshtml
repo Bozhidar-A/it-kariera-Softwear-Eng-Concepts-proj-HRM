@@ -1,4 +1,6 @@
-﻿<div id="RoomPartial">
+﻿@model Room;
+
+<div id="RoomPartial">
     <label for="roomCapacity">Room Capacity</label>
     <input type="number" min="0" id="roomCapacity" />
     <br />
@@ -11,30 +13,34 @@
     <br />
     <input type="button" value="Search" onclick="ReloadRoomVC()" />
 
-    <p>Room to reserve</p>
-    <p>ID</p>
-    <input id="TBARIDVC" readonly name="room.ID" />
-    <p>type</p>
-    <input id="TBARtypeVC" readonly name="room.type" />
-    <p>capacity</p>
-    <input id="TBARcapacityVC" readonly name="room.capacity" />
-    <p>bedAdultPrice</p>
-    <input id="TBARbedAdultPriceVC" readonly name="room.bedAdultPrice" />
-    <p>bedChildPrice</p>
-    <input id="TBARbedChildPriceVC" readonly name="room.bedChildPrice" />
-    @*<p>id</p>
-        <input id="tbaid_@model" name="clients[@listindex].id" readonly />
-        <p>first name</p>
-        <input id="tbafirstname_@model" name="clients[@listindex].firstname" readonly />
-        <p>last name</p>
-        <input id="tbalastname_@model" name="clients[@listindex].lastname" readonly />
-        <p>phone number</p>
-        <input id="tbaphonenumber_@model" name="clients[@listindex].phonenumber" readonly />
-        <p>email</p>
-        <input id="tbaemail_@model" name="clients[@listindex].email" readonly />
-        <p>adult</p>
-        <input type="checkbox" id="tbaisadult_@model" name="clients[@listindex].isadult" value="true" readonly />*@
-    @*<input type="checkbox" id="TBAisAdult_@Model" name="clients[@listIndex].bCurrInReservation" value="true" hidden checked/>*@
+    @if (Model != null)
+    {
+        <p>Room to reserve</p>
+        <p>ID</p>
+        <input id="TBARIDVC" readonly name="room.ID" value="@Model.ID" />
+        <p>type</p>
+        <input id="TBARtypeVC" readonly name="room.type" value="@Model.type" />
+        <p>capacity</p>
+        <input id="TBARcapacityVC" readonly name="room.capacity" value="@Model.capacity" />
+        <p>bedAdultPrice</p>
+        <input id="TBARbedAdultPriceVC" readonly name="room.bedAdultPrice" value="@Model.bedAdultPrice" />
+        <p>bedChildPrice</p>
+        <input id="TBARbedChildPriceVC" readonly name="room.bedChildPrice" value="@Model.bedChildPrice" />
+    }
+    else
+    {
+        <p>Room to reserve</p>
+        <p>ID</p>
+        <input id="TBARIDVC" readonly name="room.ID" />
+        <p>type</p>
+        <input id="TBARtypeVC" readonly name="room.type" />
+        <p>capacity</p>
+        <input id="TBARcapacityVC" readonly name="room.capacity" />
+        <p>bedAdultPrice</p>
+        <input id="TBARbedAdultPriceVC" readonly name="room.bedAdultPrice" />
+        <p>bedChildPrice</p>
+        <input id="TBARbedChildPriceVC" readonly name="room.bedChildPrice" />
+    }
 
     <br />
     <hr />

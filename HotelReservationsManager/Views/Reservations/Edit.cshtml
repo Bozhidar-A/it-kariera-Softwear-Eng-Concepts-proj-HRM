@@ -8,15 +8,100 @@
 <script defer src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js" integrity="sha512-DedNBWPF0hLGUPNbCYfj8qjlEnNE92Fqn7xd3Sscfu7ipy7Zu33unHdugqRD3c4Vj7/yLv+slqZhMls/4Oc7Zg==" crossorigin="anonymous"></script>
 
+
 <script>
-    $(document).ready(function () {
-        for (i = 0; i < @Model.clients.Count; i++) {
-            $.get("@Url.Action("OnGetClientReservationInputPartial", "Reservations")", { whichVC:i + 2}, function (data) {
+
+    function PassedRoom(roomID) {
+        if (roomID != null && roomID != "") {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    function ReloadRoomVC() {
+       $.ajax({
+            url: '@Url.Action("ReloadRoomSelectorViewComp", "Reservations")',
+           type: "POST",
+           data: { capacity: $(`#roomCapacity`).val(), type: $(`#roomType option:selected`).text(), bSearch: $("#roombSearch").val() },
+            success: function (data) {
+                $(`#RoomViewComp`).html(data);
+            }
+        })
+    }
+
+    function ListUserInputs() {
+        var howMany = Math.abs($('#userInputsHowMany').val());
+        $("#UserInputListed").empty();
+        for (i = 0; i < howMany; i++) {
+            $.get("@Url.Action("OnGetClientReservationInputPartial", "Reservations")", { whichVC: i + 2 + @Model.clients.Count, bEditing: true }, function (data) {
                 $("#UserInputListed")
                     .append(data);
             });
         }
+    }
+
+    function ReloadViewComp(whichVC) {
+        $.ajax({
+            url: '@Url.Action("ReloadListedClientViewComp", "Reservations")',
+            type: "POST",
+            data: { firstName: $(`#firstName_${whichVC}`).val(), lastName: $(`#lastName_${whichVC}`).val(), "whichVC": whichVC },
+            success: function (data) {
+                $(`#ClientViewComp_${whichVC}`).html(data);
+            }
+        })
+    }
+
+    $(document).ready(function () {
+        document.getElementById("reservationDate").min = new Date().toISOString().split("T")[0];
     });
+
+    function UpCookie(evn, whichVC) {
+        Cookies.set("pageSize", evn.value);
+        ReloadViewComp(whichVC);
+    }
+
+    function UpCookieRoom(evn) {
+        Cookies.set("pageSize", evn.value);
+        ReloadRoomVC();
+    }
+
+    function SetUserValuesInInput(innerIndex, whichVC) {
+        for (let i = 2; i <= $(`#TBARcapacityVC`).val() + 1; i++) {
+            //loop through all user inputs
+            if ($(`#TBAID_${i}`).val() == $(`#CIDVC_${innerIndex}${whichVC}`).val()) {
+                //user attempts to select same user twice
+                alert("Please don't select the same user twice");
+                return;
+            }
+        }
+        $(`#TBAID_${whichVC}`).val($(`#CIDVC_${innerIndex}${whichVC}`).val());
+        $(`#TBAfirstName_${whichVC}`).val($(`#CfirstNameVC_${innerIndex}${whichVC}`).val());
+        $(`#TBAlastName_${whichVC}`).val($(`#ClastNameVC_${innerIndex}${whichVC}`).val());
+        $(`#TBAphoneNumber_${whichVC}`).val($(`#CphoneNumberVC_${innerIndex}${whichVC}`).val());
+        $(`#TBAemail_${whichVC}`).val($(`#CemailVC_${innerIndex}${whichVC}`).val());
+        if ($(`#CisAdultVC_${innerIndex}${whichVC}`).is(':checked')) {
+            document.getElementById(`TBAisAdult_${whichVC}`).checked = true;
+        }
+    }
+
+    function SetRoomValuesInInput(innerIndex) {
+        $(`#TBARIDVC`).val($(`#RIDVC_${innerIndex}`).val());
+        $(`#TBARtypeVC`).val($(`#RtypeVC_${innerIndex}`).val());
+        $(`#TBARcapacityVC`).val($(`#RcapacityVC_${innerIndex}`).val());
+        $(`#TBARbedAdultPriceVC`).val($(`#RbedAdultPriceVC_${innerIndex}`).val());
+        $(`#TBARbedChildPriceVC`).val($(`#RbedChildPriceVC_${innerIndex}`).val());
+        //$("#prevRoomID").val($(`#RIDVC_${innerIndex}`).val());
+        (`#userInputsHowMany`).attr({
+            "max": @Model.room.capacity
+        });
+    }
+
+    function releaseDateMinValUpdate() {
+        document.getElementById("releaseDate").min = document.getElementById("reservationDate").value;
+    }
+
 </script>
 
 <h1>Edit</h1>
@@ -27,15 +112,14 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID" />
             <div class="form-group">
                 <label asp-for="reservationDate" class="control-label"></label>
-                <input asp-for="reservationDate" class="form-control" />
+                <input asp-for="reservationDate" type="date" class="form-control" id="reservationDate" onchange="releaseDateMinValUpdate()" />
                 <span asp-validation-for="reservationDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="releaseDate" class="control-label"></label>
-                <input asp-for="releaseDate" class="form-control" />
+                <input asp-for="releaseDate" type="date" class="form-control" id="releaseDate" />
                 <span asp-validation-for="releaseDate" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
@@ -48,11 +132,44 @@
                     <input class="form-check-input" asp-for="allInclusive" /> @Html.DisplayNameFor(model => model.allInclusive)
                 </label>
             </div>
-            <div id="UserInputListed">
-
+            <h2>Which room are the users going to stay in?</h2>
+            <div id="RoomInput">
+                <partial name="_RoomReservationInputPartial" model="@Model.room"/>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <input hidden value="@ViewBag.prevRoomID" name="prevRoomID" id="prevRoomID"/>
+            <div id="beforeAddedClients">
+                @for (int i = 0; i < Model.clients.Count; i++)
+                {
+                    <p>ID</p>
+                    <input asp-for="@Model.clients[i].ID" readonly value="@Model.clients[i].ID" />
+                    <p>First Name</p>
+                    <input asp-for="clients[i].firstName" readonly value="@Model.clients[i].firstName" />
+                    <p>Last Name</p>
+                    <input asp-for="clients[i].lastName" readonly value="@Model.clients[i].lastName" />
+                    <p>Phone Number</p>
+                    <input asp-for="clients[i].phoneNumber" readonly value="@Model.clients[i].phoneNumber" />
+                    <p>Email</p>
+                    <input asp-for="clients[i].email" readonly value="@Model.clients[i].email" />
+
+                    <br />
+                    <hr />
+                    <p>Remove this user?</p>
+                    @*<input type="checkbox" name="removedUsers[@i]" value="true" checked />*@
+                    @Html.CheckBox($"removedUsers[{i}]", false)
+                    @*<input type="checkbox" name="removedUsers[@i]" value="true" />*@
+                }
+            </div>
+            <hr />
+            <div id="userInputsMasterDiv">
+                <h2>How many users will be in this room?</h2>
+                <input type="number" id="userInputsHowMany" min="0" max="@Model.room.capacity" />
+                <input type="button" value="Load User Inputs" onclick="ListUserInputs()" />
+                <div id="UserInputListed">
+
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
             </div>
         </form>
     </div>

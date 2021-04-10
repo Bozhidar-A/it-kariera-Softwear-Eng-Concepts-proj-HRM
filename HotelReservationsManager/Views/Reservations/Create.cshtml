@@ -11,6 +11,12 @@
 
 <script>
 
+    function AddDays(date, days) {
+        var result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result.toISOString().split("T")[0];
+    }
+
     function ReloadRoomVC() {
        $.ajax({
             url: '@Url.Action("ReloadRoomSelectorViewComp", "Reservations")',
@@ -59,6 +65,14 @@
     }
 
     function SetUserValuesInInput(innerIndex, whichVC) {
+        for (let i = 2; i <= $(`#TBARcapacityVC`).val() + 1; i++) {
+            //loop through all user inputs
+            if ($(`#TBAID_${i}`).val() == $(`#CIDVC_${innerIndex}${whichVC}`).val()) {
+                //user attempts to select same user twice
+                alert("Please don't select the same user twice");
+                return;
+            }
+        }
         $(`#TBAID_${whichVC}`).val($(`#CIDVC_${innerIndex}${whichVC}`).val());
         $(`#TBAfirstName_${whichVC}`).val($(`#CfirstNameVC_${innerIndex}${whichVC}`).val());
         $(`#TBAlastName_${whichVC}`).val($(`#ClastNameVC_${innerIndex}${whichVC}`).val());
@@ -75,10 +89,20 @@
         $(`#TBARcapacityVC`).val($(`#RcapacityVC_${innerIndex}`).val());
         $(`#TBARbedAdultPriceVC`).val($(`#RbedAdultPriceVC_${innerIndex}`).val());
         $(`#TBARbedChildPriceVC`).val($(`#RbedChildPriceVC_${innerIndex}`).val());
+        $("#userInputsMasterDiv").html(`<h2>How many users will be in this room?</h2>
+            <input type="number" id="userInputsHowMany" min="0" max="${$(`#RcapacityVC_${innerIndex}`).val()}"/>
+            <input type="button" value="Load User Inputs" onclick="ListUserInputs()"/>
+            <div id="UserInputListed">
+
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>`);
+
     }
 
     function releaseDateMinValUpdate() {
-        document.getElementById("releaseDate").min = document.getElementById("reservationDate").value;
+        document.getElementById("releaseDate").min = AddDays(document.getElementById("reservationDate").value, 1);
     }
 
 </script>
@@ -115,14 +139,9 @@
             <div id="RoomInput">
                 <partial name="_RoomReservationInputPartial" />
             </div>
-            <h2>How many users will be in this room?</h2>
-            <input type="number" id="userInputsHowMany" />
-            <input type="button" value="Load User Inputs" onclick="ListUserInputs()" />
-            <div id="UserInputListed">
-
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <hr />
+            <div id="userInputsMasterDiv">
+                <p>Please select a room first</p>
             </div>
         </form>
     </div>

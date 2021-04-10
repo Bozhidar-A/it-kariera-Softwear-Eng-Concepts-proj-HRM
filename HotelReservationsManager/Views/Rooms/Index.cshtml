@@ -133,13 +133,16 @@
                     @Html.DisplayFor(modelItem => item.bedChildPrice)
                 </td>
                 <td>
+                    <a asp-action="Details" asp-route-id="@item.ID">Details</a>
                     @if (this.User.IsInRole("admin"))
                     {
-                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> 
+                        <hr />
+                        <p>ADMIN ONLY</p>
+                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a>
                         <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
                         <hr />
                     }
-                    <a asp-action="Details" asp-route-id="@item.ID">Details</a>
+
                 </td>
             </tr>
         }

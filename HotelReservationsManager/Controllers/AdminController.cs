@@ -75,8 +75,6 @@ namespace HotelReservationsManager.Controllers
         }
 
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Details(string? id)
         {
             if (id == null)

@@ -1,0 +1,62 @@
+﻿@model HotelReservationsManager.Models.ApplicationUser
+
+
+<h1>Edit</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <h4>Create a new account.</h4>
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserName"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input name="Password" class="form-control" type="password"/>
+            </div>
+            <div class="form-group">
+                <label>ConfirmPassword</label>
+                <input name="ConfirmPassword" class="form-control" type="password"/>
+            </div>
+            <div class="form-group">
+                <label asp-for="firstName"></label>
+                <input asp-for="firstName" class="form-control" />
+                <span asp-validation-for="firstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="middleName"></label>
+                <input asp-for="middleName" class="form-control" />
+                <span asp-validation-for="middleName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="lastName"></label>
+                <input asp-for="lastName" class="form-control" />
+                <span asp-validation-for="lastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhoneNumber"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EGN"></label>
+                <input asp-for="EGN" class="form-control" type="password" />
+                <span asp-validation-for="EGN" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -20,11 +20,15 @@ namespace HotelReservationsManager.Controllers
 
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public AdminController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        private readonly IPasswordHasher<ApplicationUser> _passwordHasher;
+
+        public AdminController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IPasswordHasher<ApplicationUser> passwordHasher)
         {
             _context = context;
 
             _userManager = userManager;
+
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<IActionResult> Index(int? page, 
@@ -111,6 +115,51 @@ namespace HotelReservationsManager.Controllers
             await _userManager.SetLockoutEnabledAsync(user, true);
             await _userManager.SetLockoutEndDateAsync(user, twoHundredYears);
             return RedirectToAction("Index","Admin");
+        }
+
+        public async Task<IActionResult> Edit(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var client = await _userManager.FindByIdAsync(id);
+            if (client == null)
+            {
+                return NotFound();
+            }
+            return View(client);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(string id, [Bind("Id,Email,UserName,PhoneNumber,Password,ConfirmPassword,firstName,lastName,middleName,EGN")] EditModel editModel)
+        {
+            if (id != editModel.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var user = await _userManager.FindByIdAsync(editModel.Id);
+
+                    user.PasswordHash = _passwordHasher.HashPassword(user, editModel.Password);
+                    user.Email = editModel.Email;
+                    user.UserName = editModel.UserName;
+                    user.firstName = editModel.firstName;
+                    user.lastName = editModel.lastName;
+                    user.middleName = editModel.middleName;
+                    user.EGN = editModel.EGN;
+
+                    await _userManager.UpdateAsync(user);
+                }
+                catch (Exception) { }
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

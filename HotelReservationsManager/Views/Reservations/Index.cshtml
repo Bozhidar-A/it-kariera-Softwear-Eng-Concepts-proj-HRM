@@ -9,6 +9,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+<link href="./css/PagedList.css" rel="stylesheet" type="text/css" />
 
 <script>
     $(document).ready(function () {
@@ -71,7 +72,7 @@
                     @Html.DisplayFor(modelItem => item.finalPrice)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                    @*<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |*@
                     <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
                 </td>

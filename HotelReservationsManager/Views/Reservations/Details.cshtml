@@ -42,6 +42,10 @@
         </dd>
     </dl>
 </div>
+
+<br />
+<hr />
+<br />
 @if (Model.clients.Count == 0)
 {
     <h3>!WARNING!</h3>
@@ -53,9 +57,46 @@ else
 {
     @foreach (var cl in Model.clients)
     {
-        <p>@cl.firstName</p>
+        <table>
+            <thead>
+                <tr>
+                    <td>
+                        First Name
+                    </td>
+                    <td>
+                        Last Name
+                    </td>
+                    <td>
+                        Phonenumber
+                    </td>
+                    <td>
+                        Email
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        @cl.firstName
+                    </td>
+                    <td>
+                        @cl.lastName
+                    </td>
+                    <td>
+                        @cl.phoneNumber
+                    </td>
+                    <td>
+                        @cl.email
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     }
 }
+
+<br />
+<hr />
+<br />
 
 
 @if (Model.room == null)
@@ -66,6 +107,25 @@ else
 else
 {
     <table>
+        <thead>
+            <tr>
+                <td>
+                    ID
+                </td>
+                <td>
+                    Capacity
+                </td>
+                <td>
+                    Price for bed for an adult
+                </td>
+                <td>
+                    Price for bed for a child
+                </td>
+                <td>
+                    Room is free?
+                </td>
+            </tr>
+        </thead>
         <tbody>
             <tr>
                 <td>

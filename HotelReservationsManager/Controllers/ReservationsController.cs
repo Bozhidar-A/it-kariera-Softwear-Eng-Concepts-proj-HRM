@@ -239,12 +239,50 @@ namespace HotelReservationsManager.Controllers
                         if(removedUsers[i])
                         {
                             var cl = _context.Client.Where(m => m.ID == reservation.clients[i].ID).First();
+                            reservation.clients.Remove(cl);
                             cl.bCurrInReservation = false;
-                            tempList.RemoveAt(i);
                         }
                     }
 
-                    reservation.clients = tempList;
+                    //new added clients won't have bCurrInReservation set to true
+                    foreach (Client cl in reservation.clients)
+                    {
+                        if(!cl.bCurrInReservation)
+                        {
+                            cl.bCurrInReservation = true;
+                        }
+                    }
+
+                    //reservation.clients = tempList;
+
+                    //calculate price
+                    for (int i = 0; i < NumberOfNights(reservation.reservationDate, reservation.releaseDate); i++)
+                    {
+                        //for over the nights the users will be stayiing
+                        foreach (Client cl in reservation.clients)
+                        {
+                            //add the appropriate price
+                            if (cl.isAdult)
+                            {
+                                reservation.finalPrice += reservation.room.bedAdultPrice;
+                            }
+                            else
+                            {
+                                reservation.finalPrice += reservation.room.bedChildPrice;
+                            }
+                        }
+                    }
+
+                    //add price for bnuses if needed
+                    if (reservation.breakfast)
+                    {
+                        reservation.finalPrice += breakfastPrice;
+                    }
+
+                    if (reservation.allInclusive)
+                    {
+                        reservation.finalPrice += allInclusivePrice;
+                    }
 
                     _context.Update(reservation);
                     await _context.SaveChangesAsync();
